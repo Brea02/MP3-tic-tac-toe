@@ -50,16 +50,22 @@ int main() {
 			//get player input
 			cout << "It is " << player1name << "'s turn. ";
 			mark_num = getPlayerInput(player1name);
+
 			//check if spot is taken, if it is then ask for input again
 			if (isLegalMove(board, mark_num) == false) {
 				cout << "ERROR 2 - This spot is already taken. Please select another spot. ";
 				mark_num = getPlayerInput(player1name);
 			}
+
 			//once input is confirmed, the mark is placed
 			placeMarkerOnBoard(board, player1mark, mark_num);
+
+			//counter for ties
 			player1tieCheck += 1;
+
 			displayBoard(board);
-			//checks win condiitons
+
+			//checks win and tie condiions, continues otherwise
 			if (hasThreeInRow(board, player1mark) == true) {
 				cout << "Congrats! " << player1name << " has won this game. ";
 				player1score += 1;
@@ -87,14 +93,17 @@ int main() {
 			//get player 2 input
 			cout << "It is " << player2name << "'s turn. ";
 			mark_num = getPlayerInput(player2name);
+
 			//check if spot is taken, if it is then ask for input again
 			if (isLegalMove(board, mark_num) == false) {
 				cout << "ERROR 2 - This spot is already taken. Please select another spot. ";
 				mark_num = getPlayerInput(player2name);
 			}
+
 			//once input is confirmed, the mark is placed
 			placeMarkerOnBoard(board, player2mark, mark_num);
 			displayBoard(board);
+
 			//checks win condiitons
 			if (hasThreeInRow(board, player2mark) == true) {
 				cout << "Congrats! " << player2name << " has won this game. ";
@@ -109,6 +118,7 @@ int main() {
 			}
 		}
 
+		//game has ended
 		if (player1turn == false && player2turn == false) {
 			//checks for player input to make a new game or quit
 			displayGameStats(ties, player1score, player2score);
@@ -121,6 +131,28 @@ int main() {
 			else if (check == "Y") {
 				clearBoard(board);
 				displayBoard(board);
+
+				//switches the 1st player components
+				//turns
+				bool temp_turns = player1turn;
+				player1turn = player2turn;
+				player2turn = temp_turns;
+				//names
+				string temp_names = player1name;
+				player1name = player2name;
+				player2name = temp_names;
+				//mark
+				char temp_mark = player1mark;
+				player1mark = player2mark;
+				player2mark = temp_mark;
+				//scores
+				int temp_scores = player1score;
+				player1score = player2score;
+				player2score = temp_scores;
+				//resets tie counter
+				player1tieCheck = 0;
+
+				//restarts the game
 				player1turn = true;
 			}
 		}
@@ -145,7 +177,7 @@ void displayGameStats(int ties, int playerScore, int player2Score) {
 
 //clearBoard:  reverts the board back to original without marks
 //@param: takes the current char board[] to correctly revert it back to origin
-//@return: void but does resent board[] array
+//@return: void but does reset board[] array
 void clearBoard(char board[]) {
 	board[0] = '1';
 	board[1] = '2';
